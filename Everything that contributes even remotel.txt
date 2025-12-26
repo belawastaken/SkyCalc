@@ -1,0 +1,188 @@
+# Core Player Stats
+
+### Strength
+- Base stats from Weapon, Armor, and Equipment
+- Reforges (e.g., Fabled, Fierce, Strong)
+- Magical Power (Power Stones)
+- Hot Potato Books & Fuming Potato Books
+- The Art of War
+- Gemstones (Jasper)
+- Foraging Skill levels
+- Skyblock Level rewards
+- God Potions / Dungeon Potions
+- Attributes (e.g., Strength, Dominance)
+- Pet stats and abilities (e.g., Tiger, Griffin)
+- Armor Set Bonuses (e.g., Mastiff Armor)
+- Essence Shop upgrades (e.g., Forbidden Strength)
+- Passive items (e.g., Day/Night Crystal, Blood God Crest)
+- Champion Skill (from Bestiary)
+- Cake buffs (Century Cakes)
+- Slayer level rewards
+
+### Crit Damage
+- Base Value (starts at 50%)
+- Base stats from Weapon, Armor, and Equipment
+- Reforges (e.g., Fabled, Fierce, Shaded)
+- Magical Power (Power Stones)
+- Combat Skill levels
+- Gemstones (Amethyst)
+- God Potions / Dungeon Potions
+- Attributes (e.g., Dominance)
+- Pet stats and abilities (e.g., Ender Dragon, Tiger)
+- Accessory Enrichments (Critical)
+- Slayer level rewards (all of them)
+- Champion Skill (from Bestiary)
+- Dungeon Item Stars
+- Essence Shop upgrades
+
+### Crit Chance
+- Base Value (starts at 30%)
+- Base stats from Weapon, Armor, and Equipment
+- Reforges (e.g., Fierce, Glistening)
+- Magical Power (Power Stones & Tuning Points)
+- Combat Skill levels
+- God Potions / Dungeon Potions
+- Pet stats and abilities (e.g., Griffin)
+- Accessory Enrichments
+- Armor Set Bonuses
+- Champion Skill (from Bestiary)
+- Slayer level rewards
+
+### Ferocity
+- Base stats from some Equipment (e.g., Werewolf Armor)
+- Reforges (e.g., Fierce, Dirty)
+- God Potions / Dungeon Potions
+- Pet stats and abilities (e.g., Tiger, Golden Dragon)
+- Attributes (Dominance)
+- Specific items (e.g., Daedalus Axe, Jerry-chine Gun)
+
+# Secondary Stats (Influence Abilities & Damage)
+
+### Intelligence
+- Base stats from Weapon, Armor, and Equipment
+- Reforges (e.g., Heroic, Necrotic)
+- Magical Power (Power Stones)
+- Enchanting & Alchemy Skill levels
+- Gemstones (Sapphire)
+- God Potions / Dungeon Potions
+- Pet stats and abilities (e.g., Sheep)
+- Armor Set Bonuses (e.g., Storm's Armor)
+- Fairy Souls
+- Skyblock Level rewards
+
+### Bonus Attack Speed
+- Base stats from some Equipment (e.g., Maxor's Armor)
+- Reforges (e.g., Glistening, Hasty)
+- Magical Power (Tuning Points)
+- God Potions / Dungeon Potions
+- Pet stats and abilities (e.g., Blaze)
+- Specific items (e.g., Pigman Sword ability)
+- Accessory Enrichments (Attack Speed)
+
+# Core Defensive & Utility Stats
+
+### Health
+- Base Value (starts at 100)
+- Base stats from Armor and Equipment
+- Farming, Fishing, and Mining Skill levels
+- Gemstones (Jade)
+- Reforges (e.g., Titanic, Giant)
+- Hot Potato Books & Fuming Potato Books (on armor)
+- Book of Progression
+- Pet stats and abilities (e.g., Blue Whale, Elephant)
+- Armor Set Bonuses (e.g., Perfect Armor, Mastiff Armor)
+- God Potions / Dungeon Potions
+- Skyblock Level rewards
+- Slayer level rewards
+- Essence Shop upgrades (e.g., Healthy)
+- Cake buffs (Century Cakes)
+
+### Defense
+- Base stats from Armor and Equipment
+- Mining Skill levels
+- Gemstones (Amber)
+- Reforges (e.g., Titanic, Reinforced)
+- Book of Progression
+- Pet stats and abilities (e.g., Blue Whale, Turtle)
+- Armor Set Bonuses
+- God Potions / Dungeon Potions
+- Essence Shop upgrades
+- Cake buffs (Century Cakes)
+
+### True Defense
+- Specific items (e.g., Warden Helmet, Reaper Mask, Ender Armor)
+- Pet stats and abilities (e.g., Enderman Pet)
+- Specific reforges (e.g., Perfect on Perfect Armor)
+- Slayer level rewards (e.g., Enderman Slayer)
+
+### Healing & Regeneration
+- Mending & Life Steal enchantments
+- Pet abilities (e.g., Ghoul, Zombie)
+- Item abilities (e.g., Wand of Atonement, Florid Zombie Sword)
+- Attributes (e.g., Lifeline, Mana Vampire)
+- God Potions (Healing potions)
+- Armor Set Bonuses (e.g., Revived Heart)
+- Slayer level rewards (e.g., Zombie Slayer)
+
+### Speed
+- Base Value (starts at 100)
+- Base stats from Armor and Equipment (e.g., Young Dragon Armor)
+- Reforges (e.g., Hasty, Spiked)
+- God Potions / Dungeon Potions
+- Pet stats and abilities (e.g., Black Cat)
+- Magical Power (Tuning Points)
+- Specific items (e.g., Rancher's Boots, Speed Artifact)
+- Sugar Rush enchantment
+
+### Magic Find
+- Base stats from some Armor and Equipment
+- Pet stats and abilities (e.g., Black Cat, Griffin)
+- God Potions / Dungeon Potions
+- Reforges (e.g., Fortunate)
+- Gemstones (Topaz)
+- Champion Skill (from Bestiary)
+- Slayer level rewards
+- Specific events or buffs (e.g., Spooky Festival)
+
+# Foundational Numbers & Multipliers
+
+### Base Weapon Damage
+- The item's base `Damage` stat
+- Wood Singularity
+- Dungeon Item Stars (when in dungeons)
+
+### Additive Damage Multipliers (Summed together)
+- Enchantments (e.g., Sharpness, Power, Smite, Bane of Arthropods)
+- Combat Skill multiplier (e.g., +4% per level)
+- Pet abilities (e.g., Ender Dragon's "One with the Dragon")
+- Armor Set Bonuses (e.g., Necron's "Wither Blood", Tara "Arachnal Resistance")
+- Slayer-specific weapon bonuses (e.g., Reaper Falchion vs. Zombies)
+- Dungeon Class passives (e.g., Berserker's "Bloodlust")
+- Dungeon Blessings
+
+### Multiplicative Damage Multipliers (Applied sequentially)
+- Critical Hits (multiplies by your Crit Damage stat)
+- Specific Enchantments (e.g., Giant Killer, Execute, Prosecute, Lethality)
+- Book of Progression ('Extra Infliction' perk)
+- Pet abilities (e.g., Ender Dragon's "End Strike", Wither Skeleton's "Stronger Bones")
+- Item abilities (e.g., Wither Impact from Hyperion, Valkyrie, etc.)
+- Mob-specific vulnerability (e.g., Dragon Hunter vs. Dragons, Ender Slayer vs. Endermen)
+- Target's Damage Reduction (from Defense, True Defense, and other effects)
+
+# Alternative Damage Types & Calculations
+
+### Ability Damage
+- Primarily scales with Intelligence.
+- Affected by specific item multipliers (e.g., Wither Impact).
+- Can be boosted by certain armor sets (e.g., Storm's Armor).
+- Does not typically use Strength or Weapon Damage in its formula.
+
+### Damage over Time (DoT)
+- Sources: Fire Aspect, Venom's Touch enchantments, Scorpion Foil, etc.
+- Damage is dealt in ticks over a duration.
+- Scaling can vary based on the source.
+
+### Unique Formula Modifiers
+- **One For All:** Removes most additive multipliers (like Sharpness) in exchange for a large base weapon damage boost.
+- **First Strike:** A multiplicative bonus applied only to the first hit on a mob.
+- **Soul Eater:** A multiplicative bonus that scales with mobs killed.
