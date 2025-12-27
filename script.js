@@ -42,7 +42,15 @@ async function loadIndex() {
                 // Extract filename
                 const parts = node.path.split('/');
                 const fileName = parts[parts.length - 1];
-                return { name: fileName, path: node.path };
+
+                // Format name: Remove .json, replace _ with space, Title Case
+                const cleanName = fileName
+                    .replace('.json', '')
+                    .replace(/_/g, ' ')
+                    .toLowerCase()
+                    .replace(/(?:^|\s)\w/g, c => c.toUpperCase());
+
+                return { name: cleanName, path: node.path };
             });
 
         statusElement.textContent = "Ready!";
@@ -243,7 +251,7 @@ searchInput.addEventListener('input', debounce((e) => {
         results.forEach(item => {
             const div = document.createElement('div');
             // Clean up filename for display
-            div.textContent = item.name.replace('.json', '').replace(/_/g, ' ');
+            div.textContent = item.name;
             div.style.padding = '8px';
             div.style.cursor = 'pointer';
             div.style.borderBottom = '1px solid #444';
