@@ -13,7 +13,13 @@ let currentBuild = {
     boots: null,
     weapon: null,
     pet: null,
-    profile: {}
+    profile: {
+        combat: 0,
+        foraging: 0,
+        magical_power: 0,
+        base_strength: 0,
+        base_crit_damage: 0
+    }
 };
 
 // The "Indexer" Function
@@ -85,7 +91,8 @@ function calculateTotalStats() {
         intelligence: 0,
         magic_find: 0,
         ferocity: 0,
-        attack_speed: 0
+        attack_speed: 0,
+        bonus_damage_percent: 0
     };
 
     // 2. Add Item Stats (Loop through equipment slots)
@@ -101,11 +108,33 @@ function calculateTotalStats() {
         addPetStats(stats, currentBuild.pet);
     }
 
-    // 4. Derived Stats
+    // 4. Profile Stats
+    calculateProfileStats(stats);
+
+    // 5. Derived Stats
     stats.ehp = getEHP(stats);
     stats.total_damage = getMeleeDamage(stats);
 
     return stats;
+}
+
+function calculateProfileStats(stats) {
+    const profile = currentBuild.profile;
+
+    // Combat Level: +0.5% Crit Chance, +4% Additive Damage per level
+    stats.crit_chance += profile.combat * 0.5;
+    stats.bonus_damage_percent += profile.combat * 4;
+
+    // Foraging Level: +1 or +2 Strength per level (Using 2 for simplicity)
+    stats.strength += profile.foraging * 2;
+
+    // Magical Power: Approx 0.1 Str/CD per MP
+    stats.strength += profile.magical_power * 0.1;
+    stats.crit_damage += profile.magical_power * 0.1;
+
+    // Manual Base Stats
+    stats.strength += profile.base_strength || 0;
+    stats.crit_damage += profile.base_crit_damage || 0;
 }
 
 function addItemStats(stats, item) {
@@ -153,7 +182,8 @@ function getMeleeDamage(stats) {
     const base = 5 + stats.damage + (stats.strength / 5);
     const strMult = 1 + (stats.strength / 100);
     const cdMult = 1 + (stats.crit_damage / 100);
-    return Math.floor(base * strMult * cdMult);
+    const additiveMult = 1 + (stats.bonus_damage_percent / 100);
+    return Math.floor(base * strMult * cdMult * additiveMult);
 }
 
 function getEHP(stats) {
@@ -166,6 +196,23 @@ const searchInput = document.getElementById('item-search');
 const searchResults = document.getElementById('search-results');
 const slotSelect = document.getElementById('slot-select');
 const equippedList = document.getElementById('equipped-list');
+
+// Profile Settings Listeners
+const profileMap = {
+    'input-combat': 'combat',
+    'input-foraging': 'foraging',
+    'input-mp': 'magical_power',
+    'input-base-str': 'base_strength',
+    'input-base-cd': 'base_crit_damage'
+};
+
+for (const [id, key] of Object.entries(profileMap)) {
+    const element = document.getElementById(id);
+    if (element) element.addEventListener('input', (e) => {
+        currentBuild.profile[key] = Number(e.target.value) || 0;
+        updateUI();
+    });
+}
 
 // Debounce helper
 function debounce(func, wait) {
