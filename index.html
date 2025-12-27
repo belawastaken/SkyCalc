@@ -3,68 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkyCalc Serverless</title>
+    <title>SkyBlock Item Viewer</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>SkyCalc Serverless</h1>
-        <div id="loading-status">Initializing...</div>
+        <h1>SkyBlock Item Viewer</h1>
+        <div id="loading-status">Connecting to Repo...</div>
     </header>
 
     <main class="container">
-        <!-- Build Controls (Top Left) -->
-        <section id="build-controls">
-            <div id="profile-settings" style="margin-bottom: 20px;">
-                <h4 style="margin-top: 0; margin-bottom: 10px; color: #e0e0e0;">Profile Stats</h4>
-                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <input type="number" id="input-combat" placeholder="0-60" style="flex: 1; padding: 10px; background: #3c3c3c; border: 1px solid #555; color: white; border-radius: 4px;">
-                    <input type="number" id="input-foraging" placeholder="0-50" style="flex: 1; padding: 10px; background: #3c3c3c; border: 1px solid #555; color: white; border-radius: 4px;">
-                    <input type="number" id="input-mp" placeholder="0-1600" style="flex: 1; padding: 10px; background: #3c3c3c; border: 1px solid #555; color: white; border-radius: 4px;">
-                </div>
-                <details>
-                    <summary style="cursor: pointer; color: #bbb; margin-bottom: 10px;">Base Stats (Manual)</summary>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="number" id="input-base-str" placeholder="Strength" style="flex: 1; padding: 10px; background: #3c3c3c; border: 1px solid #555; color: white; border-radius: 4px;">
-                        <input type="number" id="input-base-cd" placeholder="Crit Dmg" style="flex: 1; padding: 10px; background: #3c3c3c; border: 1px solid #555; color: white; border-radius: 4px;">
-                    </div>
-                </details>
-            </div>
-            <hr style="border: 0; border-top: 1px solid #444; margin-bottom: 20px;">
-            <select id="slot-select">
-                <option value="helmet">Helmet</option>
-                <option value="chestplate">Chestplate</option>
-                <option value="leggings">Leggings</option>
-                <option value="boots">Boots</option>
-                <option value="weapon">Weapon</option>
-                <option value="pet">Pet</option>
-            </select>
-            <input type="text" id="item-search" placeholder="Search items...">
+        <section id="search-section">
+            <input type="text" id="item-search" placeholder="Search for any item...">
             <div id="search-results" style="display: none;"></div>
-            <ul id="equipped-list"></ul>
         </section>
 
-        <!-- Stats Display (Top Right) -->
-        <section id="stats-display">
-            <div class="stats-grid">
-                <div class="stat-box">Damage: <span id="stat-damage">0</span></div>
-                <div class="stat-box">Strength: <span id="stat-strength">0</span></div>
-                <div class="stat-box">Crit Chance: <span id="stat-crit-chance">0</span></div>
-                <div class="stat-box">Crit Damage: <span id="stat-crit-damage">0</span></div>
-                <div class="stat-box">Health: <span id="stat-health">0</span></div>
-                <div class="stat-box">Defense: <span id="stat-defense">0</span></div>
-            </div>
-            <div class="summary-stats">
-                <div class="summary-box">
-                    <h3>EHP</h3>
-                    <span id="summary-ehp">0</span>
-                </div>
-                <div class="summary-box">
-                    <h3>Total Damage</h3>
-                    <span id="summary-total-damage">0</span>
-                </div>
+        <section id="list-section">
+            <div id="item-list-container">
+                <ul id="selected-items-list"></ul>
             </div>
         </section>
+
+        <footer>
+            <button id="clear-list-btn">Clear List</button>
+        </footer>
     </main>
 
     <script src="script.js"></script>
