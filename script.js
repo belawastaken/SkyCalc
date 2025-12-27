@@ -23,7 +23,8 @@ const STAT_SYMBOLS = {
 
 // --- 1. Index Loader ---
 async function loadIndex() {
-    const statusElement = document.getElementById('loading-status');
+    const statusElement = document.getElementById('status-dot');
+    statusElement.classList.add('status-loading');
     
     try {
         const response = await fetch(`https://api.github.com/repos/${REPO_USER}/${REPO_NAME}/git/trees/${BRANCH}?recursive=1`);
@@ -46,14 +47,13 @@ async function loadIndex() {
                 return { name: cleanName, path: node.path };
             });
 
-        statusElement.textContent = "Ready!";
-        statusElement.style.backgroundColor = "#66bb6a"; 
-        statusElement.style.color = "#fff";
+        statusElement.className = "status-ready";
+        statusElement.title = "Connected";
 
     } catch (error) {
         console.error("Index Error:", error);
-        statusElement.textContent = "Error loading data";
-        statusElement.style.backgroundColor = "#ef5350";
+        statusElement.className = "status-error";
+        statusElement.title = "Connection Failed";
     }
 }
 

@@ -6,32 +6,63 @@ body {
     padding: 0;
 }
 
-/* Loading Status */
-#loading-status {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #ffeb3b;
-    color: #000000;
-    text-align: center;
-    padding: 4px 0;
-    font-size: 14px;
-    font-weight: bold;
-    z-index: 9999;
-}
-
 header {
-    margin-top: 30px; /* Space for the fixed loading bar */
     padding: 20px;
-    text-align: center;
     background-color: #252526;
     border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 h1 {
     margin: 0;
     font-size: 1.8rem;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #555; /* Default off state */
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.status-loading {
+    background-color: #ffeb3b !important;
+    box-shadow: 0 0 8px #ffeb3b;
+}
+
+.status-ready {
+    background-color: #4caf50 !important;
+    box-shadow: 0 0 8px #4caf50;
+}
+
+.status-error {
+    background-color: #f44336 !important;
+    box-shadow: 0 0 8px #f44336;
+}
+
+#settings-btn {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.2s, text-shadow 0.2s;
+}
+
+#settings-btn:hover {
+    color: #fff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 .container {
