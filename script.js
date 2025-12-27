@@ -5,33 +5,29 @@ const BRANCH = "master";
 
 // Global State
 let itemIndex = [];
-let petDataCache = {};
-let currentBuild = {
-    helmet: null,
-    chestplate: null,
-    leggings: null,
-    boots: null,
-    weapon: null,
-    pet: null,
-    profile: {
-        combat: 0,
-        foraging: 0,
-        magical_power: 0,
-        base_strength: 0,
-        base_crit_damage: 0
-    }
+
+// Symbol Map (Matches your CSS classes)
+const STAT_SYMBOLS = {
+    health: { sym: "❤", css: "stat-health" },
+    defense: { sym: "❈", css: "stat-defense" },
+    strength: { sym: "❁", css: "stat-strength" },
+    intelligence: { sym: "✎", css: "stat-intelligence" },
+    speed: { sym: "✦", css: "stat-speed" },
+    crit_chance: { sym: "☣", css: "stat-crit" },
+    crit_damage: { sym: "☠", css: "stat-crit" },
+    attack_speed: { sym: "⚔", css: "stat-speed" },
+    sea_creature_chance: { sym: "α", css: "stat-intelligence" },
+    magic_find: { sym: "✯", css: "stat-intelligence" },
+    ferocity: { sym: "⫽", css: "stat-health" }
 };
 
-// The "Indexer" Function
+// --- 1. Index Loader ---
 async function loadIndex() {
     const statusElement = document.getElementById('loading-status');
     
     try {
         const response = await fetch(`https://api.github.com/repos/${REPO_USER}/${REPO_NAME}/git/trees/${BRANCH}?recursive=1`);
-        
-        if (!response.ok) {
-            throw new Error(`GitHub API error: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(response.status);
 
         const data = await response.json();
 
@@ -39,11 +35,8 @@ async function loadIndex() {
         itemIndex = data.tree
             .filter(node => node.path.startsWith('items/') && node.path.endsWith('.json'))
             .map(node => {
-                // Extract filename
                 const parts = node.path.split('/');
                 const fileName = parts[parts.length - 1];
-
-                // Format name: Remove .json, replace _ with space, Title Case
                 const cleanName = fileName
                     .replace('.json', '')
                     .replace(/_/g, ' ')
@@ -54,222 +47,141 @@ async function loadIndex() {
             });
 
         statusElement.textContent = "Ready!";
-        statusElement.style.backgroundColor = "#66bb6a"; // Green for success
-        statusElement.style.color = "#ffffff";
+        statusElement.style.backgroundColor = "#66bb6a"; 
+        statusElement.style.color = "#fff";
 
     } catch (error) {
-        console.error("Failed to load index:", error);
+        console.error("Index Error:", error);
         statusElement.textContent = "Error loading data";
-        statusElement.style.backgroundColor = "#ef5350"; // Red for error
+        statusElement.style.backgroundColor = "#ef5350";
     }
 }
 
-// Pet Data Fetcher
-async function loadPetConstants() {
+// --- 2. Add Item Logic ---
+async function addItem(path) {
     try {
-        const response = await fetch(`https://raw.githubusercontent.com/${REPO_USER}/${REPO_NAME}/${BRANCH}/constants/pets.json`);
-        if (!response.ok) {
-            throw new Error(`Pet constants error: ${response.status}`);
-        }
-        petDataCache = await response.json();
-    } catch (error) {
-        console.error("Failed to load pet constants:", error);
-    }
-}
+        // Fetch the specific item JSON
+        const url = `https://raw.githubusercontent.com/${REPO_USER}/${REPO_NAME}/${BRANCH}/${path}`;
+        const res = await fetch(url);
+        const data = await res.json();
 
-// Initialization
-async function init() {
-    await Promise.all([loadIndex(), loadPetConstants()]);
-}
+        // Create HTML Elements
+        const li = document.createElement('li');
+        li.className = 'list-entry';
 
-init();
+        // 1. Info Section (Name, Type, Rarity)
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'entry-info';
+        
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'entry-name';
+        nameSpan.textContent = data.displayname ? data.displayname.replace(/§./g, '') : data.internalname;
+        // Basic Rarity Color Logic
+        const rarityColor = getRarityColor(data.tier || "COMMON");
+        nameSpan.style.color = rarityColor;
 
-// --- Stat Engine ---
+        const typeSpan = document.createElement('span');
+        typeSpan.className = 'entry-type';
+        // Try to guess type from ID or Data
+        let type = "ITEM";
+        if(path.includes("WEAPON")) type = "WEAPON";
+        else if(path.includes("ARMOR")) type = "ARMOR";
+        else if(path.includes("PET")) type = "PET";
+        typeSpan.textContent = type;
 
-function calculateTotalStats() {
-    // 1. Define base stats
-    let stats = {
-        damage: 0,
-        strength: 0,
-        crit_chance: 30,
-        crit_damage: 50,
-        health: 100,
-        defense: 0,
-        speed: 100,
-        intelligence: 0,
-        magic_find: 0,
-        ferocity: 0,
-        attack_speed: 0,
-        bonus_damage_percent: 0
-    };
+        const raritySpan = document.createElement('span');
+        raritySpan.className = 'entry-rarity';
+        raritySpan.textContent = data.tier || "COMMON";
+        
+        infoDiv.appendChild(nameSpan);
+        infoDiv.appendChild(typeSpan);
+        infoDiv.appendChild(raritySpan);
 
-    // 2. Add Item Stats (Loop through equipment slots)
-    const slots = ['helmet', 'chestplate', 'leggings', 'boots', 'weapon'];
-    slots.forEach(slot => {
-        if (currentBuild[slot]) {
-            addItemStats(stats, currentBuild[slot]);
-        }
-    });
+        // 2. Stats Section
+        const statsDiv = document.createElement('div');
+        statsDiv.className = 'entry-stats';
 
-    // 3. Add Pet Stats
-    if (currentBuild.pet) {
-        addPetStats(stats, currentBuild.pet);
-    }
-
-    // 4. Profile Stats
-    calculateProfileStats(stats);
-
-    // 5. Derived Stats
-    stats.ehp = getEHP(stats);
-    stats.total_damage = getMeleeDamage(stats);
-
-    return stats;
-}
-
-function calculateProfileStats(stats) {
-    const profile = currentBuild.profile;
-
-    // Combat Level: +0.5% Crit Chance, +4% Additive Damage per level
-    stats.crit_chance += profile.combat * 0.5;
-    stats.bonus_damage_percent += profile.combat * 4;
-
-    // Foraging Level: +1 or +2 Strength per level (Using 2 for simplicity)
-    stats.strength += profile.foraging * 2;
-
-    // Magical Power: Approx 0.1 Str/CD per MP
-    stats.strength += profile.magical_power * 0.1;
-    stats.crit_damage += profile.magical_power * 0.1;
-
-    // Manual Base Stats
-    stats.strength += profile.base_strength || 0;
-    stats.crit_damage += profile.base_crit_damage || 0;
-}
-
-function addItemStats(stats, item) {
-    if (!item.stats) return;
-
-    const statMap = {
-        'DAMAGE': 'damage', 'STRENGTH': 'strength', 'CRIT_CHANCE': 'crit_chance',
-        'CRIT_DAMAGE': 'crit_damage', 'HEALTH': 'health', 'DEFENSE': 'defense',
-        'WALK_SPEED': 'speed', 'INTELLIGENCE': 'intelligence',
-        'MAGIC_FIND': 'magic_find', 'FEROCITY': 'ferocity', 'ATTACK_SPEED': 'attack_speed'
-    };
-
-    for (let key in item.stats) {
-        if (statMap[key]) stats[statMap[key]] += item.stats[key];
-    }
-}
-
-function addPetStats(stats, petItem) {
-    let petId = petItem.internalname;
-    if (petId && petId.startsWith("PET_")) petId = petId.substring(4);
-
-    const petData = petDataCache[petId];
-    // Default to LEGENDARY if tier is missing
-    const rarity = petItem.tier || "LEGENDARY";
-    
-    if (petData && petData[rarity] && petData[rarity].stats) {
-        const level = currentBuild.profile.level || 100;
-        const statMap = {
-            'DAMAGE': 'damage', 'STRENGTH': 'strength', 'CRIT_CHANCE': 'crit_chance',
-            'CRIT_DAMAGE': 'crit_damage', 'HEALTH': 'health', 'DEFENSE': 'defense',
-            'WALK_SPEED': 'speed', 'INTELLIGENCE': 'intelligence',
-            'MAGIC_FIND': 'magic_find', 'FEROCITY': 'ferocity', 'ATTACK_SPEED': 'attack_speed'
-        };
-
-        for (let key in petData[rarity].stats) {
-            if (statMap[key]) {
-                stats[statMap[key]] += (level / 100) * petData[rarity].stats[key];
+        if (data.stats) {
+            for (const [key, val] of Object.entries(data.stats)) {
+                // NEU uses uppercase keys (DAMAGE, STRENGTH), map to lowercase for our lookup
+                const lowerKey = key.toLowerCase();
+                
+                if (STAT_SYMBOLS[lowerKey]) {
+                    const statSpan = document.createElement('span');
+                    const sym = STAT_SYMBOLS[lowerKey].sym;
+                    const cssClass = STAT_SYMBOLS[lowerKey].css;
+                    
+                    statSpan.className = cssClass;
+                    statSpan.textContent = `+${val}${sym}`; // e.g. +50❁
+                    statsDiv.appendChild(statSpan);
+                }
             }
         }
+
+        li.appendChild(infoDiv);
+        li.appendChild(statsDiv);
+
+        document.getElementById('selected-items-list').appendChild(li);
+
+    } catch (err) {
+        console.error("Item Fetch Error:", err);
     }
 }
 
-function getMeleeDamage(stats) {
-    // Hypixel formula: (5 + Damage + Strength/5) * (1 + Strength/100) * (1 + CritDamage/100)
-    const base = 5 + stats.damage + (stats.strength / 5);
-    const strMult = 1 + (stats.strength / 100);
-    const cdMult = 1 + (stats.crit_damage / 100);
-    const additiveMult = 1 + (stats.bonus_damage_percent / 100);
-    return Math.floor(base * strMult * cdMult * additiveMult);
+// Helper: Rarity Colors
+function getRarityColor(tier) {
+    const colors = {
+        COMMON: "#ffffff",
+        UNCOMMON: "#55ff55",
+        RARE: "#5555ff",
+        EPIC: "#aa00aa",
+        LEGENDARY: "#ffaa00",
+        MYTHIC: "#ff55ff",
+        DIVINE: "#55ffff",
+        SPECIAL: "#ff5555"
+    };
+    return colors[tier] || "#ffffff";
 }
 
-function getEHP(stats) {
-    return Math.floor(stats.health * (1 + (stats.defense / 100)));
-}
-
-// --- UI & Interaction ---
-
+// --- 3. UI Interaction ---
 const searchInput = document.getElementById('item-search');
 const searchResults = document.getElementById('search-results');
-const slotSelect = document.getElementById('slot-select');
-const equippedList = document.getElementById('equipped-list');
+const clearListBtn = document.getElementById('clear-list-btn');
 
-// Profile Settings Listeners
-const profileMap = {
-    'input-combat': 'combat',
-    'input-foraging': 'foraging',
-    'input-mp': 'magical_power',
-    'input-base-str': 'base_strength',
-    'input-base-cd': 'base_crit_damage'
-};
-
-for (const [id, key] of Object.entries(profileMap)) {
-    const element = document.getElementById(id);
-    if (element) element.addEventListener('input', (e) => {
-        currentBuild.profile[key] = Number(e.target.value) || 0;
-        updateUI();
-    });
-}
-
-// Debounce helper
-function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-}
-searchInput.addEventListener('input', debounce((e) => {
+// Debounce
+let searchTimeout;
+searchInput.addEventListener('input', (e) => {
     const query = e.target.value.toLowerCase();
-    searchResults.innerHTML = '';
-    
+    clearTimeout(searchTimeout);
+
     if (query.length < 2) {
         searchResults.style.display = 'none';
         return;
     }
 
-    const results = itemIndex.filter(item => 
-        item.name.toLowerCase().includes(query)
-    ).slice(0, 10); // Limit results for performance
+    searchTimeout = setTimeout(() => {
+        searchResults.innerHTML = '';
+        const results = itemIndex.filter(item => item.name.toLowerCase().includes(query)).slice(0, 10);
 
-    if (results.length > 0) {
-        searchResults.style.display = 'block';
-        results.forEach(item => {
-            const div = document.createElement('div');
-            // Clean up filename for display
-            div.textContent = item.name;
-            div.style.padding = '8px';
-            div.style.cursor = 'pointer';
-            div.style.borderBottom = '1px solid #444';
-            
-            // Hover effect
-            div.addEventListener('mouseenter', () => div.style.backgroundColor = '#444');
-            div.addEventListener('mouseleave', () => div.style.backgroundColor = 'transparent');
-
-            div.addEventListener('click', () => {
-                addItem(item.path);
-                searchResults.style.display = 'none';
-                searchInput.value = '';
+        if (results.length > 0) {
+            searchResults.style.display = 'block';
+            results.forEach(item => {
+                const div = document.createElement('div');
+                div.textContent = item.name;
+                div.addEventListener('click', () => {
+                    addItem(item.path);
+                    searchResults.style.display = 'none';
+                    searchInput.value = '';
+                });
+                searchResults.appendChild(div);
             });
-            searchResults.appendChild(div);
-        });
-    } else {
-        searchResults.style.display = 'none';
-    }
-}, 300));
+        } else {
+            searchResults.style.display = 'none';
+        }
+    }, 300);
+});
 
-// Hide search results on outside click
+// Hide search on outside click
 document.addEventListener('click', (e) => {
     if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
         searchResults.style.display = 'none';
@@ -277,11 +189,9 @@ document.addEventListener('click', (e) => {
 });
 
 // Clear List
-if (clearListBtn) {
-    clearListBtn.addEventListener('click', () => {
-        itemListContainer.innerHTML = '';
-    });
-}
+clearListBtn.addEventListener('click', () => {
+    document.getElementById('selected-items-list').innerHTML = '';
+});
 
-// Init
+// Start
 loadIndex();
