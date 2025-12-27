@@ -230,8 +230,6 @@ function debounce(func, wait) {
         timeout = setTimeout(() => func.apply(this, args), wait);
     };
 }
-
-// Search Logic
 searchInput.addEventListener('input', debounce((e) => {
     const query = e.target.value.toLowerCase();
     searchResults.innerHTML = '';
@@ -241,7 +239,6 @@ searchInput.addEventListener('input', debounce((e) => {
         return;
     }
 
-    // Filter itemIndex
     const results = itemIndex.filter(item => 
         item.name.toLowerCase().includes(query)
     ).slice(0, 10); // Limit results for performance
@@ -261,8 +258,7 @@ searchInput.addEventListener('input', debounce((e) => {
             div.addEventListener('mouseleave', () => div.style.backgroundColor = 'transparent');
 
             div.addEventListener('click', () => {
-                const slot = slotSelect.value;
-                setItem(slot, item.path);
+                addItem(item.path);
                 searchResults.style.display = 'none';
                 searchInput.value = '';
             });
@@ -273,101 +269,19 @@ searchInput.addEventListener('input', debounce((e) => {
     }
 }, 300));
 
-// Hide search results when clicking outside
+// Hide search results on outside click
 document.addEventListener('click', (e) => {
     if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
         searchResults.style.display = 'none';
     }
 });
 
-// Fetch and Equip Item
-async function setItem(slot, path) {
-    const statusElement = document.getElementById('loading-status');
-    statusElement.textContent = `Loading ${slot}...`;
-    statusElement.style.backgroundColor = "#ffeb3b"; // Yellow
-    statusElement.style.color = "#000";
-
-    try {
-        const url = `https://raw.githubusercontent.com/${REPO_USER}/${REPO_NAME}/${BRANCH}/${path}`;
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-            throw new Error(`Failed to fetch item: ${response.status}`);
-        }
-        
-        const itemData = await response.json();
-        
-        // Update build
-        currentBuild[slot] = itemData;
-        updateUI();
-        
-        statusElement.textContent = "Ready!";
-        statusElement.style.backgroundColor = "#66bb6a";
-        statusElement.style.color = "#fff";
-
-    } catch (error) {
-        console.error("Error setting item:", error);
-        statusElement.textContent = "Error loading item";
-        statusElement.style.backgroundColor = "#ef5350";
-    }
-}
-
-// Update UI Elements
-function updateUI() {
-    const stats = calculateTotalStats();
-
-    // Update Stat Grid
-    document.getElementById('stat-damage').textContent = Math.floor(stats.damage);
-    document.getElementById('stat-strength').textContent = Math.floor(stats.strength);
-    document.getElementById('stat-crit-chance').textContent = Math.floor(stats.crit_chance) + '%';
-    document.getElementById('stat-crit-damage').textContent = Math.floor(stats.crit_damage) + '%';
-    document.getElementById('stat-health').textContent = Math.floor(stats.health);
-    document.getElementById('stat-defense').textContent = Math.floor(stats.defense);
-
-    // Update Summary
-    document.getElementById('summary-ehp').textContent = stats.ehp.toLocaleString();
-    document.getElementById('summary-total-damage').textContent = stats.total_damage.toLocaleString();
-
-    // Render Equipped List
-    equippedList.innerHTML = '';
-    const slots = ['helmet', 'chestplate', 'leggings', 'boots', 'weapon', 'pet'];
-    
-    slots.forEach(slot => {
-        if (currentBuild[slot]) {
-            const li = document.createElement('li');
-            li.style.marginBottom = '10px';
-            li.style.padding = '10px';
-            li.style.backgroundColor = '#333';
-            li.style.borderRadius = '4px';
-            li.style.display = 'flex';
-            li.style.justifyContent = 'space-between';
-            li.style.alignItems = 'center';
-
-            // Clean display name (remove color codes like §a)
-            let displayName = currentBuild[slot].displayname || currentBuild[slot].name || 'Unknown Item';
-            displayName = displayName.replace(/§[0-9a-fk-or]/g, '');
-
-            const textSpan = document.createElement('span');
-            textSpan.textContent = `${slot.charAt(0).toUpperCase() + slot.slice(1)}: ${displayName}`;
-            
-            const removeBtn = document.createElement('button');
-            removeBtn.textContent = 'Remove';
-            removeBtn.style.marginLeft = '10px';
-            removeBtn.style.backgroundColor = '#d32f2f';
-            removeBtn.style.color = 'white';
-            removeBtn.style.border = 'none';
-            removeBtn.style.padding = '5px 10px';
-            removeBtn.style.borderRadius = '4px';
-            removeBtn.style.cursor = 'pointer';
-            
-            removeBtn.onclick = () => {
-                currentBuild[slot] = null;
-                updateUI();
-            };
-
-            li.appendChild(textSpan);
-            li.appendChild(removeBtn);
-            equippedList.appendChild(li);
-        }
+// Clear List
+if (clearListBtn) {
+    clearListBtn.addEventListener('click', () => {
+        itemListContainer.innerHTML = '';
     });
 }
+
+// Init
+loadIndex();
