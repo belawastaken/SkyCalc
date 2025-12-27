@@ -3,16 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkyCalc MVP</title>
+    <title>SkyCalc Serverless</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <input type="number" id="base-damage" placeholder="Base Damage">
-    <input type="number" id="strength" placeholder="Strength">
-    <input type="number" id="crit-damage" placeholder="Crit Damage">
+    <header>
+        <h1>SkyCalc Serverless</h1>
+        <div id="loading-status">Initializing...</div>
+    </header>
 
-    <button id="calc-btn">Calculate Damage</button>
+    <main class="container">
+        <!-- Build Controls (Top Left) -->
+        <section id="build-controls">
+            <select id="slot-select">
+                <option value="helmet">Helmet</option>
+                <option value="chestplate">Chestplate</option>
+                <option value="leggings">Leggings</option>
+                <option value="boots">Boots</option>
+                <option value="weapon">Weapon</option>
+                <option value="pet">Pet</option>
+            </select>
+            <input type="text" id="item-search" placeholder="Search items...">
+            <div id="search-results" style="display: none;"></div>
+            <ul id="equipped-list"></ul>
+        </section>
 
-    <div id="result-display"></div>
+        <!-- Stats Display (Top Right) -->
+        <section id="stats-display">
+            <div class="stats-grid">
+                <div class="stat-box">Damage: <span id="stat-damage">0</span></div>
+                <div class="stat-box">Strength: <span id="stat-strength">0</span></div>
+                <div class="stat-box">Crit Chance: <span id="stat-crit-chance">0</span></div>
+                <div class="stat-box">Crit Damage: <span id="stat-crit-damage">0</span></div>
+                <div class="stat-box">Health: <span id="stat-health">0</span></div>
+                <div class="stat-box">Defense: <span id="stat-defense">0</span></div>
+            </div>
+            <div class="summary-stats">
+                <div class="summary-box">
+                    <h3>EHP</h3>
+                    <span id="summary-ehp">0</span>
+                </div>
+                <div class="summary-box">
+                    <h3>Total Damage</h3>
+                    <span id="summary-total-damage">0</span>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <script src="script.js"></script>
 </body>

@@ -1,0 +1,146 @@
+body {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Loading Status */
+#loading-status {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #ffeb3b;
+    color: #000000;
+    text-align: center;
+    padding: 4px 0;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 9999;
+}
+
+header {
+    margin-top: 30px; /* Space for the fixed loading bar */
+    padding: 20px;
+    text-align: center;
+    background-color: #252526;
+    border-bottom: 1px solid #333;
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Sections */
+#build-controls, #stats-display {
+    background-color: #252526;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    flex: 1;
+    min-width: 300px;
+}
+
+/* Build Controls */
+#build-controls {
+    position: relative;
+}
+
+#slot-select, #item-search {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background-color: #3c3c3c;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+#slot-select:focus, #item-search:focus {
+    outline: none;
+    border-color: #007acc;
+}
+
+#search-results {
+    position: absolute;
+    background-color: #2d2d2d;
+    border: 1px solid #444;
+    width: calc(100% - 40px); /* Match container width minus padding */
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    left: 20px;
+}
+
+#equipped-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+/* Stats Display */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stat-box {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+    border: 1px solid #444;
+}
+
+.stat-box span {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4fc3f7;
+    margin-top: 5px;
+}
+
+.summary-stats {
+    display: flex;
+    gap: 20px;
+}
+
+.summary-box {
+    flex: 1;
+    background-color: #3e3e3e;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #555;
+}
+
+.summary-box h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+    color: #bbb;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.summary-box span {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ffca28;
+}
